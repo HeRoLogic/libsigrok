@@ -73,6 +73,18 @@ static const struct pps_model models[] = {
 			{ { 0, 6, 0.01 }, { 0, 3, 0.001 } },
 		},
 	},
+        { PPS_3205T_3S, "PPS3205T-3S",
+		CHANMODE_INDEPENDENT | CHANMODE_SERIES | CHANMODE_PARALLEL,
+		3,
+		{
+			/* Channel 1 */
+			{ { 0, 32, 0.01 }, { 0, 5, 0.001 } },
+			/* Channel 2 */
+			{ { 0, 32, 0.01 }, { 0, 5, 0.001 } },
+			/* Channel 3 */
+			{ { 0, 6, 0.01 }, { 0, 5, 0.001 } },
+		},
+	},
 };
 
 static GSList *scan(struct sr_dev_driver *di, GSList *options, int modelid)
@@ -177,6 +189,11 @@ static GSList *scan_3203(struct sr_dev_driver *di, GSList *options)
 	return scan(di, options, PPS_3203T_3S);
 }
 
+
+static GSList *scan_3205(struct sr_dev_driver *di, GSList *options)
+{
+	return scan(di, options, PPS_3205T_3S);
+}
 static int config_get(uint32_t key, GVariant **data,
 	const struct sr_dev_inst *sdi, const struct sr_channel_group *cg)
 {
@@ -422,3 +439,23 @@ static struct sr_dev_driver atten_pps3203_driver_info = {
 	.context = NULL,
 };
 SR_REGISTER_DEV_DRIVER(atten_pps3203_driver_info);
+
+static struct sr_dev_driver atten_pps3205_driver_info = {
+	.name = "atten-pps3205",
+	.longname = "Atten PPS3205T-3S",
+	.api_version = 1,
+	.init = std_init,
+	.cleanup = std_cleanup,
+	.scan = scan_3205,
+	.dev_list = std_dev_list,
+	.dev_clear = std_dev_clear,
+	.config_get = config_get,
+	.config_set = config_set,
+	.config_list = config_list,
+	.dev_open = std_serial_dev_open,
+	.dev_close = dev_close,
+	.dev_acquisition_start = dev_acquisition_start,
+	.dev_acquisition_stop = dev_acquisition_stop,
+	.context = NULL,
+};
+SR_REGISTER_DEV_DRIVER(atten_pps3205_driver_info);
